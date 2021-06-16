@@ -10,10 +10,12 @@ CYAN="\033[36m"
 WHITE="\033[37m"
 
 #g ../push_swap.c
+cp ../push_swap .
+cp ../checker_Mac .
 function push_swap()
 {
-	TEST1=$(../push_swap $@ | ../checker_Mac $@)
-	LENINC=$(../push_swap $@ | wc -l)
+	TEST1=$(./push_swap $@ | ./checker_Mac $@)
+	LENINC=$(./push_swap $@ | wc -l)
 
 	if [ "$TEST1" == "OK" ]
 	then
@@ -24,13 +26,14 @@ function push_swap()
 		printf " $BLUE%s\n$RESET" "================="
 	elif [ "$TEST1" == "KO" ]
 	then
+		echo "$TEST1"
 		printf "$RED%s$RESET\n" "============="
-		printf "$RED%s$@$RESET\n" "KO in "
+		printf "$RED%s$@$RESET\n" "stats = KO in ==> "
 		printf "$RED%s$RESET\n" "============="
 	elif [ "$TEST1" == "Error" ]
 	then
 		printf "$RED%s$RESET\n" "============="
-		printf "$RED%s$@\n$RESET" "KO ERROR in "
+		printf "$RED%s$@\n$RESET" "ERROR"
 		printf "$RED%s$RESET\n" "============="
 	fi
 }
@@ -60,6 +63,8 @@ SUCSS=$(echo "$ALL" | grep "stats = OK" | wc -l | awk -F ' ' '{print}' | xargs e
 printf "$YELLOW how many success == > ✓ $GREEN%d$RESET\n" "$SUCSS"
 FAIL=$(echo "$ALL" | grep "stats = KO" | wc -l |  awk -F ' ' '{print}' | xargs echo)
 printf "$YELLOW how many fail    == > ✗ $RED%d$RESET\n" "$FAIL"
+FAIL_E=$(echo "$ALL" | grep "ERROR" | wc -l |  awk -F ' ' '{print}' | xargs echo)
+printf "$YELLOW how many ERRORS  == > ✗ $RED%d$RESET\n" "$FAIL_E"
 NUMBER=$(echo "$ALL" | grep "operations == " | grep -Eo '[0-9]+'| awk -F '\n' '{print}'| xargs | cat)
 
 printf "$YELLOW ======>  result <==== $RESET  \n"
